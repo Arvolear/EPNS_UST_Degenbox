@@ -1,0 +1,24 @@
+{
+  "name": "epns_ust_degenbox",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Arvolear",
+  "license": "MIT",
+  "scripts": {
+    "install": "npx husky install",
+    "lint-fix": "npm run lint-js-fix && npm run lint-json-fix",
+    "lint-json-fix": "prettier --write \"./[a-zA-Z0-9.]+(?!-lock).json\"",
+    "lint-js-fix": "prettier --write \"./**/*.js\""
+  },
+  "dependencies": {
+    "@epnsproject/backend-sdk": "^1.3.5",
+    "@truffle/contract": "^4.5.0",
+    "bignumber.js": "^9.0.1",
+    "dotenv": "^10.0.0",
+    "web3": "^1.5.2"
+  },
+  "devDependencies": {
+    "husky": "^7.0.2",
+    "prettier": "^2.4.0"
+  }
+}
