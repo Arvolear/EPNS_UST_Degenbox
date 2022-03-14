@@ -37,7 +37,7 @@ async function notifyAll(epns, title, body, link) {
     { offChain: true }
   );
 
-  console.log(response);
+  console.log(response, new Date());
 }
 
 module.exports = {

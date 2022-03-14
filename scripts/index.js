@@ -27,8 +27,6 @@ async function checkAndNotify(epns, degenboxContract) {
       `There are currently ${currentBalance} MIM tokens available for borrowing.`,
       "https://abracadabra.money/stand"
     );
-
-    storeValue(currentBalance);
   } else if (valueStored > epsilon && currentBalance <= epsilon) {
     await notifyAll(
       epns,
@@ -36,9 +34,13 @@ async function checkAndNotify(epns, degenboxContract) {
       "No more MIM tokens available for borrowing.",
       "https://abracadabra.money/stand"
     );
+  }
 
+  if (currentBalance != valueStored) {
     storeValue(currentBalance);
   }
+
+  console.log("checked " + new Date());
 }
 
 function delay(ms) {
@@ -51,7 +53,7 @@ async function main() {
 
   while (true) {
     await checkAndNotify(epns, degenboxContract);
-    await delay(60000); // 1 minute
+    await delay(15000); // 15 sec
   }
 }
 
