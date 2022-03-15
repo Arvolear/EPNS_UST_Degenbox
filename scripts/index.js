@@ -13,8 +13,8 @@ const USTCauldronAddress = "0x59E9082E068Ddb27FC5eF1690F9a9f22B32e573f";
 const USTDegenboxAddress = "0xd96f48665a1410c0cd669a88898eca36b9fc2cce";
 
 const decimals = "1000000000000000000"; // 10**18
-const notificationTreshold = 10; // 10 MIM token
-const epsilon = 0.00001;
+const notificationTreshold = 1; // 1 MIM token
+const epsilon = 0.01;
 
 async function checkAndNotify(epns, degenboxContract) {
   let valueStored = readStored();

@@ -21,11 +21,8 @@ function getEPNS() {
 }
 
 async function notifyAll(epns, title, body, link) {
-  const allSubscribers = await epns.getSubscribedUsers();
-  // console.log(allSubscribers);
-
-  const response = await epns.sendNotification(
-    "0xEd498E75d471C3b874461a87Bb7146453CC8175A",
+  await epns.sendNotification(
+    "0x53638975BC11de3029E46DF193d64879EAeA94eB",
     title,
     body,
     title,
@@ -37,7 +34,7 @@ async function notifyAll(epns, title, body, link) {
     { offChain: true }
   );
 
-  console.log(response, new Date());
+  console.log("Notification broadcast", new Date());
 }
 
 module.exports = {
