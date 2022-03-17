@@ -13,30 +13,37 @@ const USTCauldronAddress = "0x59E9082E068Ddb27FC5eF1690F9a9f22B32e573f";
 const USTDegenboxAddress = "0xd96f48665a1410c0cd669a88898eca36b9fc2cce";
 
 const decimals = "1000000000000000000"; // 10**18
-const notificationTreshold = 1; // 1 MIM token
+const notificationTresholdUp = 1.5; // 1.5x raise in liquidity
+const notificationThresholdDown = 2; // 2x drop in liquidity
 const epsilon = 0.01;
 
 async function checkAndNotify(epns, degenboxContract) {
   let valueStored = readStored();
   let currentBalance = (await degenboxContract.balanceOf(MIMAddress, USTCauldronAddress)).div(decimals).toNumber();
 
-  if (currentBalance - valueStored >= notificationTreshold) {
+  if (currentBalance > valueStored * notificationTresholdUp) {
     await notifyAll(
       epns,
-      "Available Degenbox UST liquidity",
+      "Added liquidity",
       `There are currently ${currentBalance} MIM tokens available for borrowing.`,
       "https://abracadabra.money/stand"
     );
+    storeValue(currentBalance);
   } else if (valueStored > epsilon && currentBalance <= epsilon) {
     await notifyAll(
       epns,
-      "Drained Degenbox UST liquidity",
+      "Drained liquidity",
       "No more MIM tokens available for borrowing.",
       "https://abracadabra.money/stand"
     );
-  }
-
-  if (currentBalance != valueStored) {
+    storeValue(currentBalance);
+  } else if (valueStored > currentBalance * notificationThresholdDown) {
+    await notifyAll(
+      epns,
+      "Dropped liquidity",
+      `There are currently ${currentBalance} MIM tokens left for borrowing.`,
+      "https://abracadabra.money/stand"
+    );
     storeValue(currentBalance);
   }
 
