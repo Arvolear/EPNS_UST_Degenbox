@@ -15,13 +15,24 @@ const USTDegenboxAddress = "0xd96f48665a1410c0cd669a88898eca36b9fc2cce";
 const decimals = "1000000000000000000"; // 10**18
 const notificationTresholdUp = 1.5; // 1.5x raise in liquidity
 const notificationThresholdDown = 2; // 2x drop in liquidity
-const epsilon = 0.01;
+const epsilon = 1;
 
+/**
+ * This function sends notifications in these 3 cases:
+ *
+ *   - if the external balance is more than E MIM tokens and
+ *     the difference between the stored value and the external value is more than X times
+ *
+ *   - if the external value is more than E MIM tokens and
+ *     the difference between the external value and the stored value is more than Y times
+ *
+ *   - if the external value is less than E MIM tokens and the stored value is more than E MIM tokens
+ */
 async function checkAndNotify(epns, degenboxContract) {
   let valueStored = readStored();
   let currentBalance = (await degenboxContract.balanceOf(MIMAddress, USTCauldronAddress)).div(decimals).toNumber();
 
-  if (currentBalance > valueStored * notificationTresholdUp) {
+  if (currentBalance >= epsilon && currentBalance > valueStored * notificationTresholdUp) {
     await notifyAll(
       epns,
       "Added liquidity",
@@ -29,19 +40,19 @@ async function checkAndNotify(epns, degenboxContract) {
       "https://abracadabra.money/stand"
     );
     storeValue(currentBalance);
-  } else if (valueStored > epsilon && currentBalance <= epsilon) {
-    await notifyAll(
-      epns,
-      "Drained liquidity",
-      "No more MIM tokens available for borrowing.",
-      "https://abracadabra.money/stand"
-    );
-    storeValue(currentBalance);
-  } else if (valueStored > currentBalance * notificationThresholdDown) {
+  } else if (currentBalance >= epsilon && valueStored > currentBalance * notificationThresholdDown) {
     await notifyAll(
       epns,
       "Dropped liquidity",
       `There are currently ${currentBalance} MIM tokens left for borrowing.`,
+      "https://abracadabra.money/stand"
+    );
+    storeValue(currentBalance);
+  } else if (currentBalance < epsilon && valueStored >= epsilon) {
+    await notifyAll(
+      epns,
+      "Drained liquidity",
+      "No more MIM tokens available for borrowing.",
       "https://abracadabra.money/stand"
     );
     storeValue(currentBalance);
