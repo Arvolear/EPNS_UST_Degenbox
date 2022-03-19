@@ -17,14 +17,16 @@ const notificationTresholdUp = 1.5; // 1.5x raise in liquidity
 const notificationThresholdDown = 2; // 2x drop in liquidity
 const epsilon = 1;
 
+const checkTime = 10000; // 10 sec
+
 /**
  * This function sends notifications in these 3 cases:
  *
  *   - if the external balance is more than E MIM tokens and
- *     the difference between the stored value and the external value is more than X times
+ *     the difference between the external value and the stored value is more than X times (external > stored)
  *
  *   - if the external value is more than E MIM tokens and
- *     the difference between the external value and the stored value is more than Y times
+ *     the difference between the stored value and the external value is more than Y times (stored > external)
  *
  *   - if the external value is less than E MIM tokens and the stored value is more than E MIM tokens
  */
@@ -71,7 +73,7 @@ async function main() {
 
   while (true) {
     await checkAndNotify(epns, degenboxContract);
-    await delay(15000); // 15 sec
+    await delay(checkTime);
   }
 }
 
